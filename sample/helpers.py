@@ -1,6 +1,5 @@
 import pandas as pd
 from sklearn import preprocessing
-from configs import *
 from config import cols
 
 
@@ -18,7 +17,10 @@ def age_categories(x):
 
 
 class DataPreparation:
-    def __init__(self, df):
+    def __init__(self, df: pd.DataFrame) -> None:
+        """
+        :rtype: object
+        """
         self.df = df
     def filling_data(self, imp):
         array = imp.fit_transform(self.df)

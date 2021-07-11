@@ -1,9 +1,10 @@
-from flask import Flask, jsonify
+from flask import Flask, jsonify, request, make_response
 import pickle
 from config import *
 from sample.helpers import *
 from sklearn.impute import SimpleImputer
 import pandas as pd
+import json
 
 app = Flask(__name__)
 
@@ -23,6 +24,8 @@ def get_data(path_train_data, path_test_data) :
 @app.route("/titanic/predict", methods=["GET"])
 def predict():
     # Gets data
+    data = request.get_json()
+    data = pd.DataFrame(data["data"])
     train_data, test_data = get_data('data/train.csv', 'data/test.csv')
     data = train_data[0:10]
 
@@ -33,8 +36,15 @@ def predict():
     final_data.filling_data(imp)
     final_data.feature_engineering()
     X_test = final_data.vectorize_test_set()
-    predictions = loaded_model.predict(X_test)
+    try:
+        predictions = loaded_model.predict(X_test)
+    except:
+        return jsonify("Error occured when applying model!")
+
+    # Make response : I need to investigate to get a json standard result
     return jsonify(f"Here are {predictions} vs real values {train_data.loc[0:10, 'Survived'].values}")
+    #response = dict(data=list(predictions), prediction_label={'survived': 1, 'not survived': 0})
+    #return make_response(jsonify(response))
 
 
 if __name__ == '__main__':

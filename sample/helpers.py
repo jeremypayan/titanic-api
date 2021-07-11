@@ -1,6 +1,8 @@
 import pandas as pd
-from sklearn.impute import SimpleImputer
 from sklearn import preprocessing
+from configs import *
+from config import cols
+
 
 def age_categories(x):
     """Takes an age as input and returns the age category. It will be applied on Age arrays"""
@@ -32,10 +34,10 @@ class DataPreparation:
         except Exception as e:
             print(f"error : {e}")
     def vectorize_train_set(self):
-        X = self.df[['Pclass_code', 'Sex_code', 'Embarked_code', 'age_category']].values
+        X = self.df[cols].values
         y = self.df['Survived'].values.astype('int')
         return X, y
     def vectorize_test_set(self):
-        X = self.df[['Pclass_code', 'Sex_code', 'Embarked_code', 'age_category']].values
+        X = self.df[cols].values
         return X
 
